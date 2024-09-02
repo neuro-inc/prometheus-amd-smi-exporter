@@ -15,12 +15,19 @@ jobs:
       uses: actions/checkout@v4
     - name: Install dependencies
       run: |
-        wget -qO - https://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
+        # Make the directory if it doesn't exist yet.
+        # This location is recommended by the distribution maintainers.
+        sudo mkdir --parents --mode=0755 /etc/apt/keyrings
+        # Download the key, convert the signing-key to a full
+        # keyring required by apt and store in the keyring directory
+        wget https://repo.radeon.com/rocm/rocm.gpg.key -O - | \
+          gpg --dearmor | sudo tee /etc/apt/keyrings/rocm.gpg > /dev/null
 
-        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/debian/ focal main' | sudo tee /etc/apt/sources.list.d/rocm.list
-        sudo apt-get install rocm-dev
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/amdgpu/6.2/ubuntu jammy main" \
+            | sudo tee /etc/apt/sources.list.d/amdgpu.list
+        sudo apt update
+        sudo apt install rocm
 
-        sudo apt-get update
         make clean
         make
       working-directory: ./src
