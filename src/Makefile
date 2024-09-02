@@ -18,17 +18,20 @@ install:
 	sudo cp amd-smi-exporter.service /etc/systemd/system
 	sudo cp amd-smi-custom-rules.yml /etc/prometheus
 
-container:
+docker_build:
 	mkdir -p ./install/library
 	mkdir -p ./install/binconfig
 	sudo cp -r /opt/goamdsmi ./install/library
 	sudo cp -r /opt/e-sms ./install/library
 	sudo cp -r /opt/rocm ./install/library
 	sudo cp amd_smi_exporter ./install/binconfig
-	sudo docker build -t amd_smi_exporter_container:0.1 .
-	sudo docker save -o k8/amd_smi_exporter_container.tar amd_smi_exporter_container:0.1
+	sudo docker build -t prometheus-amd-smi-exporter:$(TAG) .
+	sudo docker save -o k8/prometheus-amd-smi-exporter.tar prometheus-amd-smi-exporter:$(TAG)
 
+docker_push:
+	sudo docker push $(REGISTRY)/$(IMAGE_NAME):$(TAG)
+	
 container_clean:
 	sudo rm -rf install
 	sudo rm -rf k8/amd_smi_exporter_container.tar
-	sudo docker rmi amd_smi_exporter_container:0.1
+	sudo docker rmi amd_smi_exporter_container:$(TAG)
