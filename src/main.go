@@ -50,7 +50,6 @@ import (
 	"src/collect" // This has the implementation of the Scan() function
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/amd/goamdsmi"
 )
 
 var gGPUProductNames[24] string
