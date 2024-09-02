@@ -15,7 +15,12 @@ jobs:
       uses: actions/checkout@v4
     - name: Install dependencies
       run: |
-        sudo apt-get install librdc-dev
+        wget -qO - https://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
+
+        echo 'deb [arch=amd64] https://repo.radeon.com/rocm/apt/debian/ focal main' | sudo tee /etc/apt/sources.list.d/rocm.list
+        sudo apt-get install rocm-dev
+
+        sudo apt-get update
         make clean
         make
       working-directory: ./src
