@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         make clean
-        make build
+        make
       working-directory: ./src
 
     - name: Login to ghcr.io
